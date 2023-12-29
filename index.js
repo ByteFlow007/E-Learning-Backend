@@ -15,7 +15,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 
 app.get("/", async (req, res) => {
   const admin = await Admin.find();
-  res.json({data: admin});
+  res.json({admin});
 });
 
 app.listen(PORT, () => {
