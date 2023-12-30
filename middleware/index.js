@@ -1,10 +1,9 @@
-
-require('dotenv').config();
-const jwt = require('jsonwebtoken');
-const secret_key =process.env.secret_key ;
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
+const secret_key = process.env.secret_key;
 
 const userAuth = (req, res, next) => {
-  if (req.user && req.user.role === 'user') {
+  if (req.user && req.user.role === "user") {
     next(); // User is authenticated
   } else {
     return res.sendStatus(403); // Forbidden for non-users
@@ -12,7 +11,7 @@ const userAuth = (req, res, next) => {
 };
 
 const adminAuth = (req, res, next) => {
-  if (req.user && req.user.role === 'admin') {
+  if (req.user && req.user.role === "admin") {
     next(); // Admin is authenticated
   } else {
     return res.sendStatus(403); // Forbidden for non-admins
@@ -20,19 +19,17 @@ const adminAuth = (req, res, next) => {
 };
 
 const auth = (req, res, next) => {
-  const jwtKey = req.headers.authorization;
-  if (jwtKey) {
-    const token = jwtKey;
-    jwt.verify(token, secret_key, (err, user) => {
-      if (err) {
-        return res.sendStatus(403); // Unauthorized
-      }
-      req.user = user;
-      next();
-    });
-  } else {
-    return res.sendStatus(401); // Forbidden
+  const token = req.headers.authorization;
+  if (!token) {
+    return res.status(401).json({ message: "Invalid Token" });
   }
+  jwt.verify(token, secret_key, (err, user) => {
+    if (err) {
+      return res.sendStatus(403); // Unauthorized
+    }
+    req.user = user;
+    next();
+  });
 };
 
 module.exports = { adminAuth, userAuth, auth };
