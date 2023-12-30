@@ -23,6 +23,10 @@ const courseSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
     },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Admin",
+    },
   },
   { timestamps: true }
 );
