@@ -27,7 +27,9 @@ app.post("/admin/signup", async (req, res) => {
       await new Admin({ email, username, password }).save();
       return res.send("Admin Registered.");
     }
-    res.status(400).json({ message: "Admin already exists!" });
+
+    res.status(400).json({ message: "Admin already exist!" });
+
   } catch (err) {
     res.json({ err, errMessage: "Error!" });
   }
@@ -43,8 +45,10 @@ app.post("/admin/signin", async (req, res) => {
     if (!admin) {
       return res.status(404).send("Invalid Credentials!");
     }
+
     const token = jwt.sign({ usernameOrEmail, role: 'admin' }, secretKey, { expiresIn: '1h' });
     res.json({ message: "Signin Successful", token });
+
   } catch (err) {
     res.json({ err, errMessage: "Error!" });
   }
