@@ -81,3 +81,19 @@ app.put("/admin/update/:userId",auth,adminAuth,async(req,res)=>{
      res.json({error:e})
  }
 })
+
+app.delete("/admin/:adminId",async(req,res)=>{
+  try{
+    
+    const admin_id=req.params.adminId;
+    const admin=Admin.findById(admin_id);
+    if(admin){
+      const delAdmin=await Admin.findByIdAndDelete(admin_id);
+      return res.json({message:"Admin Deleted"})
+    }
+    res.json({message:"Admin not present"})
+  }
+  catch(e){
+    res.json({error:e})
+  }
+})
