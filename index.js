@@ -1,17 +1,18 @@
 // File: mainApp.js
 const express = require("express");
+const app=express();
 const { userAuth, adminAuth, auth } = require("./middleware/index.js");
 const Admin = require("./modal/Admin/admin.modal.js");
 const User = require("./modal/User/user.modal.js");
 const Course = require("./modal/Course/course.modal.js");
 const connectDB = require("./db/index.js");
 const jwt = require("jsonwebtoken");
+const cors=require('cors');
 require("dotenv").config();
 connectDB();
-
+app.use(cors());
 const PORT = process.env.PORT || 3000;
-const app = express();
-const secretKey = process.env.secret_key;
+const secretKey = process.env.SECRET_KEY;
 app.use(express.json());
 
 // Admin Routes--------------------------------------------------------------------------------
@@ -54,6 +55,25 @@ app.post("/admin/signin", async (req, res) => {
   }
 });
 
+app.put("/admin/update/:userId",auth,adminAuth,async(req,res)=>{
+  try{
+    const{password,newPassword,confirmPassword}=req.body;
+    const user=await Admin.findById(req.params.userId);
+   if(user.password===password){
+   
+    if(newPassword===confirmPassword){
+      
+      await Admin.findByIdAndUpdate(req.params.userId,{password:newPassword},{new:true});
+      return res.json({message:"Password updated succesfull"});
+    }
+    return res.json({message:"newPassword and confirmPassword is not matching"})
+   }
+   res.json({message:"Password in wrong"})
+  }
+ catch(e){
+     res.json({error:e})
+ }
+})
 //Port Listening on --------------------------------------------------------------------------------------------
 
 app.listen(PORT, () => {

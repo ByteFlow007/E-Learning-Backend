@@ -1,6 +1,6 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
-const secret_key = process.env.secret_key;
+const secret_key = process.env.SECRET_KEY;
 
 const userAuth = (req, res, next) => {
   if (req.user && req.user.role === "user") {
