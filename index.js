@@ -22,8 +22,6 @@ connectDB()
     console.log("Database connection error!");
   });
 
-
-
 // Admin Routes--------------------------------------------------------------------------------
 
 app.get("/", auth, adminAuth, async (req, res) => {
@@ -63,3 +61,23 @@ app.post("/admin/signin", async (req, res) => {
     res.json({ err, errMessage: "Error!" });
   }
 });
+
+app.put("/admin/update/:userId",auth,adminAuth,async(req,res)=>{
+  try{
+    const{password,newPassword,confirmPassword}=req.body;
+    const user=await Admin.findById(req.params.userId);
+   if(user.password===password){
+   
+    if(newPassword===confirmPassword){
+      
+      await Admin.findByIdAndUpdate(req.params.userId,{password:newPassword},{new:true});
+      return res.json({message:"Password updated succesfull"});
+    }
+    return res.json({message:"newPassword and confirmPassword is not matching"})
+   }
+   res.json({message:"Password in wrong"})
+  }
+ catch(e){
+     res.json({error:e})
+ }
+})
