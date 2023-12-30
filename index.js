@@ -62,38 +62,118 @@ app.post("/admin/signin", async (req, res) => {
   }
 });
 
-app.put("/admin/update/:userId",auth,adminAuth,async(req,res)=>{
-  try{
-    const{password,newPassword,confirmPassword}=req.body;
-    const user=await Admin.findById(req.params.userId);
-   if(user.password===password){
-   
-    if(newPassword===confirmPassword){
-      
-      await Admin.findByIdAndUpdate(req.params.userId,{password:newPassword},{new:true});
-      return res.json({message:"Password updated succesfull"});
+app.put("/admin/update/:userId", auth, adminAuth, async (req, res) => {
+  try {
+    const { password, newPassword, confirmPassword } = req.body;
+    const user = await Admin.findById(req.params.userId);
+    if (user.password === password) {
+      if (newPassword === confirmPassword) {
+        await Admin.findByIdAndUpdate(
+          req.params.userId,
+          { password: newPassword },
+          { new: true }
+        );
+        return res.json({ message: "Password updated succesfull" });
+      }
+      return res.json({
+        message: "newPassword and confirmPassword is not matching",
+      });
     }
-    return res.json({message:"newPassword and confirmPassword is not matching"})
-   }
-   res.json({message:"Password in wrong"})
+    res.json({ message: "Password in wrong" });
+  } catch (e) {
+    res.json({ error: e });
   }
- catch(e){
-     res.json({error:e})
- }
-})
+});
 
-app.delete("/admin/:adminId",async(req,res)=>{
-  try{
-    
-    const admin_id=req.params.adminId;
-    const admin=Admin.findById(admin_id);
-    if(admin){
-      const delAdmin=await Admin.findByIdAndDelete(admin_id);
-      return res.json({message:"Admin Deleted"})
+app.delete("/admin/:adminId", auth, adminAuth, async (req, res) => {
+  try {
+    const admin_id = req.params.adminId;
+    const admin = Admin.findById(admin_id);
+    if (admin) {
+      await Admin.findByIdAndDelete(admin_id);
+      return res.json({ message: "Admin Deleted" });
     }
-    res.json({message:"Admin not present"})
+    res.json({ message: "Admin not present" });
+  } catch (e) {
+    res.json({ error: e });
   }
-  catch(e){
-    res.json({error:e})
+});
+
+// User routes --------------------------------------------------------------------------------------------
+
+app.get("/", auth, userAuth, async (req, res) => {
+  const user = await User.find();
+  res.json({ user });
+});
+
+app.post("/user/signup", async (req, res) => {
+  try {
+    const { email, username, password } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      await new User({ email, username, password }).save();
+      return res.json({ messgae: "User Registered." });
+    }
+    res.status(400).json({ message: "User already exist!" });
+  } catch (err) {
+    res.json({ err, errMessage: "Error!" });
   }
-})
+});
+
+app.post("/user/signin", async (req, res) => {
+  try {
+    const { usernameOrEmail, password } = req.body; // Updated variable name
+    const user = await User.findOne({
+      $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
+      password: password,
+    });
+    if (!user) {
+      return res.status(404).json({ message: "Invalid Credentials!" });
+    }
+    const token = jwt.sign({ usernameOrEmail, role: "user" }, secretKey, {
+      expiresIn: "1h",
+    });
+    res.json({ message: "Signin Successful", token });
+  } catch (err) {
+    res.json({ err, errMessage: "Error!" });
+  }
+});
+
+app.put("/user/update/:userId", auth, userAuth, async (req, res) => {
+  try {
+    const { password, newPassword, confirmPassword } = req.body;
+    const user = await User.findById(req.params.userId);
+    if (user.password === password) {
+      if (newPassword === confirmPassword) {
+        await User.findByIdAndUpdate(
+          req.params.userId,
+          { password: newPassword },
+          { new: true }
+        );
+        return res.json({ message: "Password updated succesfull" });
+      }
+      return res.json({
+        message: "newPassword and confirmPassword is not matching",
+      });
+    }
+    res.json({ message: "Password in wrong" });
+  } catch (e) {
+    res.json({ error: e });
+  }
+});
+
+app.delete("/user/:userId", auth, userAuth, async (req, res) => {
+  try {
+    const user_id = req.params.userId;
+    const user = User.findById(user_id);
+    if (user) {
+      await User.findByIdAndDelete(user_id);
+      return res.json({ message: "User Deleted" });
+    }
+    res.json({ message: "User not present" });
+  } catch (e) {
+    res.json({ error: e });
+  }
+});
+
+//--------------------------------------------------------------------------------------------------
