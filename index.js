@@ -1,21 +1,20 @@
 const express = require("express");
-const mongoose = require("mongoose");
-const Admin = require("./modal/admin.modal.js");
-const app = express();
-
+const Admin = require("./modal/Admin/admin.modal.js");
+const User = require("./modal/User/user.modal.js");
+const Course = require("./modal/Course/course.modal.js");
+const connectDB = require("./db/index.js");
 
 require("dotenv").config();
-const PORT = process.env.PORT || 3000;
-app.use(express.json());
+connectDB();
 
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const PORT = process.env.PORT || 3000;
+const app = express();
+
+app.use(express.json());
 
 app.get("/", async (req, res) => {
   const admin = await Admin.find();
-  res.json({data: admin});
+  res.json({ data: admin });
 });
 
 app.listen(PORT, () => {
