@@ -1,5 +1,5 @@
 const express = require("express");
-
+const jwt = require("jsonwebtoken");
 const Admin = require("./modal/Admin/admin.modal.js");
 const User = require("./modal/User/user.modal.js");
 const Course = require("./modal/Course/course.modal.js");
@@ -21,12 +21,12 @@ app.get("/", async (req, res) => {
 app.post("/admin/signup", async (req, res) => {
   try {
     const { email, username, password } = req.body;
-    const admin = await Admin.findOne({email})
+    const admin = await Admin.findOne({ email });
     if (!admin) {
       await new Admin({ email, username, password }).save();
       return res.send("Admin Registered.");
     }
-    res.status(400).json({message: "Admin already exist!"});
+    res.status(400).json({ message: "Admin already exist!" });
   } catch (err) {
     res.json({ err, errMessage: "Error!" });
   }
@@ -39,7 +39,7 @@ app.post("/admin/signin", async (req, res) => {
     if (!admin) {
       return res.status(404).send("Invalid Credentials!");
     }
-    res.json({ message: "Signin Successful", admin });
+    res.json({ message: "Signin Successful", admin, token });
   } catch (err) {
     res.json({ err, errMessage: "Error!" });
   }
