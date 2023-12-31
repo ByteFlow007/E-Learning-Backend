@@ -88,7 +88,7 @@ const updateAdmin = async (req, res) => {
       );
     }
     res.json(new ApiError(400, "Wrong Password."));
-  } catch (e) {
+  } catch (err) {
     res.json(
       new ApiError(404, "Code error in update route", [
         {
@@ -109,7 +109,7 @@ const deleteAdmin = async (req, res) => {
       return res.json(new ApiResponse(200, admin, "Admin Deleted"));
     }
     res.json(new ApiError(400, "Admin not present."));
-  } catch (e) {
+  } catch (err) {
     res.json(
       new ApiError(404, "Code error in delete route.", [
         {
