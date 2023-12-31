@@ -26,6 +26,7 @@ connectDB()
 
 app.get("/", auth, adminAuth, async (req, res) => {
   const admin = await Admin.find();
+ console.log(req.user);
   res.json({ admin });
 });
 
@@ -99,6 +100,46 @@ app.delete("/admin/:adminId", auth, adminAuth, async (req, res) => {
   }
 });
 
+app.post("/admin/createCourses", auth, adminAuth, async (req, res) => {
+  console.log(req.user);
+  try {
+    const { title, description, image, price, isPublished } = req.body;
+    const username = req.user.usernameOrEmail;
+
+    const admin = await Admin.findOne({
+      $or: [{ username: username }, { email: username }],
+    });
+
+    if (admin) {
+      const createdBy = admin._id;
+
+      // Create an instance of the Course model
+      const course = new Course({
+        title,
+        description,
+        image,
+        price,
+        isPublished,
+        createdBy,
+      });
+
+      // Save the course instance to the database
+      await course.save();
+      admin.courseCreated.push(course);
+      await admin.save();
+      console.log(course);
+      return res.json({ message: "Course is created successfully" });
+    }
+
+    res.json({ message: "Admin not found" });
+  } catch (e) {
+    res.json({ error: e.message });
+  }
+});
+app.get('/courses',async(req,res)=>{
+  const course=await Course.find({}); 
+  res.json({course});
+})
 // User routes --------------------------------------------------------------------------------------------
 
 app.get("/", auth, userAuth, async (req, res) => {
@@ -112,7 +153,7 @@ app.post("/user/signup", async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) {
       await new User({ email, username, password }).save();
-      return res.json({ messgae: "User Registered." });
+      return res.json({ message: "User Registered." });
     }
     res.status(400).json({ message: "User already exist!" });
   } catch (err) {
@@ -175,5 +216,7 @@ app.delete("/user/:userId", auth, userAuth, async (req, res) => {
     res.json({ error: e });
   }
 });
+
+
 
 //--------------------------------------------------------------------------------------------------
