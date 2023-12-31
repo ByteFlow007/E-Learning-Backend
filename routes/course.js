@@ -71,7 +71,9 @@ const deleteCourse = async (req, res) => {
         const deletedCourse = await Course.findByIdAndDelete(courseid);
         admin.courseCreated.splice(index, 1);
         await admin.save();
-        return res.json(new ApiResponse(200, deletedCourse, "Course Deleted Successfully."));
+        return res.json(
+          new ApiResponse(200, deletedCourse, "Course Deleted Successfully.")
+        );
       }
       return res.json(new ApiError(400, "Course not found"));
     } else {
@@ -89,4 +91,20 @@ const deleteCourse = async (req, res) => {
   }
 };
 
-module.exports = { getCourse, createCourse, deleteCourse };
+const publishedCourse = async (req, res) => {
+  try {
+    const publishedCourse = await Course.find({ isPublished: true });
+    res.send(new ApiResponse(200, publishedCourse, "All published courses."));
+  } catch (err) {
+    res.json(
+      new ApiError(404, "Code error in course creation route", [
+        {
+          message: err.message,
+          stack: err.stack,
+        },
+      ])
+    );
+  }
+};
+
+module.exports = { getCourse, createCourse, deleteCourse, publishedCourse };
