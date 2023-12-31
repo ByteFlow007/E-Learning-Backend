@@ -28,6 +28,7 @@ connectDB()
 
 app.get("/admin", auth, adminAuth, async (req, res) => {
   const admin = await Admin.find();
+ console.log(req.user);
   res.json({ admin });
 });
 
@@ -131,6 +132,64 @@ app.delete("/admin/:adminId", auth, adminAuth, async (req, res) => {
   }
 });
 
+app.post("/admin/createCourses", auth, adminAuth, async (req, res) => {
+  console.log(req.user);
+  try {
+    const { title, description, image, price, isPublished } = req.body;
+    const username = req.user.usernameOrEmail;
+
+    const admin = await Admin.findOne({
+      $or: [{ username: username }, { email: username }],
+    });
+
+    if (admin) {
+      const createdBy = admin._id;
+
+      // Create an instance of the Course model
+      const course = new Course({
+        title,
+        description,
+        image,
+        price,
+        isPublished,
+        createdBy,
+      });
+
+      // Save the course instance to the database
+      await course.save();
+      admin.courseCreated.push(course);
+      await admin.save();
+      console.log(course);
+      return res.json({ message: "Course is created successfully" });
+    }
+
+    res.json({ message: "Admin not found" });
+  } catch (e) {
+    res.json({ error: e.message });
+  }
+});
+
+app.delete("/admin/delete/:courseId",auth,adminAuth,async(req,res)=>{
+  try{
+    const courseid=req.params.courseId;
+    const course=Course.findById(courseid);
+    if(course){
+      await Course.findByIdAndDelete(courseid);
+      return  res.json({message:"Course is deleted"});
+    }
+    res.json({message:"Course is not present"})
+   
+  }
+  catch(e){
+    res.json({error:e});
+  }
+ 
+})
+
+app.get('/courses',async(req,res)=>{
+  const course=await Course.find({}); 
+  res.json({course});
+})
 // User routes --------------------------------------------------------------------------------------------
 
 app.get("/user", auth, adminAuth, async (req, res) => {
@@ -145,6 +204,7 @@ app.post("/user/signup", async (req, res) => {
     if (!user) {
       const data = await new User({ email, username, password }).save();
       return res.json(new ApiResponse(200, data, "User Sign-Up Successful!"));
+
     }
     res.status(400).json(new ApiError(400, "User Already Exist!"));
   } catch (err) {
@@ -237,6 +297,7 @@ app.delete("/user/:userId", auth, userAuth, async (req, res) => {
     );
   }
 });
+
 
 //Course Route ------------------------------------------------------------------------------------
 
