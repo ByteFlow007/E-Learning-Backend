@@ -58,18 +58,28 @@ const createCourse = async (req, res) => {
 
 const deleteCourse = async (req, res) => {
   try {
+    const username = req.user.usernameOrEmail;
+    const admin = await Admin.findOne({
+      $or: [{ username: username }, { email: username }],
+    });
     const courseid = req.params.courseId;
-    const course = Course.findById(courseid);
-    if (course) {
-      await Course.findByIdAndDelete(courseid);
-      return res.json(
-        new ApiResponse(200, course, "Course Deleted Successfully.")
-      );
+    const find_course = admin.courseCreated.includes(courseid);
+    if (find_course) {
+      const index = admin.courseCreated.indexOf(courseid);
+      const course = Course.findById(courseid);
+      if (course) {
+        const deletedCourse = await Course.findByIdAndDelete(courseid);
+        admin.courseCreated.splice(index, 1);
+        await admin.save();
+        return res.json(new ApiResponse(200, deletedCourse, "Course Deleted Successfully."));
+      }
+      return res.json(new ApiError(400, "Course not found"));
+    } else {
+      res.json(new ApiError(400, "Admin not found"));
     }
-    res.json(new ApiError(400, "Course not found"));
   } catch (err) {
     res.json(
-      new ApiError(404, "Code error in course delete route", [
+      new ApiError(404, "Code error in course creation route", [
         {
           message: err.message,
           stack: err.stack,
