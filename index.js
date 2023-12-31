@@ -48,6 +48,7 @@ app.post("/admin/createCourses", auth, adminAuth, createCourse);
 
 app.delete("/admin/delete/:courseId", auth, adminAuth, deleteCourse);
 
+
 // User routes --------------------------------------------------------------------------------------------
 
 app.get("/user", getUser);
