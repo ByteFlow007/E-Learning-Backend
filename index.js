@@ -6,6 +6,8 @@ const { userAuth, adminAuth, auth } = require("./middleware/index.js");
 const Admin = require("./modal/Admin/admin.modal.js");
 const User = require("./modal/User/user.modal.js");
 const Course = require("./modal/Course/course.modal.js");
+const ApiResponse = require("./utils/ApiResponse.js");
+const ApiError = require("./utils/ApiError.js");
 
 //dotenv configuration
 require("dotenv").config();
@@ -24,7 +26,7 @@ connectDB()
 
 // Admin Routes--------------------------------------------------------------------------------
 
-app.get("/", auth, adminAuth, async (req, res) => {
+app.get("/admin", auth, adminAuth, async (req, res) => {
   const admin = await Admin.find();
   res.json({ admin });
 });
@@ -34,12 +36,19 @@ app.post("/admin/signup", async (req, res) => {
     const { email, username, password } = req.body;
     const admin = await Admin.findOne({ email });
     if (!admin) {
-      await new Admin({ email, username, password }).save();
-      return res.json({ messgae: "Admin Registered." });
+      const data = await new Admin({ email, username, password }).save();
+      return res.json(new ApiResponse(200, data, "Admin Sign-Up Successful!"));
     }
-    res.status(400).json({ message: "Admin already exist!" });
+    res.json(new ApiError(400, "Admin Already Exist", []));
   } catch (err) {
-    res.json({ err, errMessage: "Error!" });
+    res.json(
+      new ApiError(404, "Code error in signup route", [
+        {
+          message: err.message,
+          stack: err.stack,
+        },
+      ])
+    );
   }
 });
 
@@ -56,24 +65,33 @@ app.post("/admin/signin", async (req, res) => {
     const token = jwt.sign({ usernameOrEmail, role: "admin" }, secretKey, {
       expiresIn: "1h",
     });
-    res.json({ message: "Signin Successful", token });
+    res.json(new ApiResponse(200, token, "Admin Sign-Up Successful!"));
   } catch (err) {
-    res.json({ err, errMessage: "Error!" });
+    res.json(
+      new ApiError(404, "Code error in signin route", [
+        {
+          message: err.message,
+          stack: err.stack,
+        },
+      ])
+    );
   }
 });
 
-app.put("/admin/update/:userId", auth, adminAuth, async (req, res) => {
+app.put("/admin/update/:adminId", auth, adminAuth, async (req, res) => {
   try {
     const { password, newPassword, confirmPassword } = req.body;
-    const user = await Admin.findById(req.params.userId);
-    if (user.password === password) {
+    const admin = await Admin.findById(req.params.adminId);
+    if (admin.password === password) {
       if (newPassword === confirmPassword) {
         await Admin.findByIdAndUpdate(
-          req.params.userId,
+          req.params.adminId,
           { password: newPassword },
           { new: true }
         );
-        return res.json({ message: "Password updated succesfull" });
+        return res.json(
+          new ApiResponse(200, admin, "Password updated succesfull")
+        );
       }
       return res.json({
         message: "newPassword and confirmPassword is not matching",
@@ -81,7 +99,14 @@ app.put("/admin/update/:userId", auth, adminAuth, async (req, res) => {
     }
     res.json({ message: "Password in wrong" });
   } catch (e) {
-    res.json({ error: e });
+    res.json(
+      new ApiError(404, "Code error in update route", [
+        {
+          message: err.message,
+          stack: err.stack,
+        },
+      ])
+    );
   }
 });
 
@@ -91,17 +116,24 @@ app.delete("/admin/:adminId", auth, adminAuth, async (req, res) => {
     const admin = Admin.findById(admin_id);
     if (admin) {
       await Admin.findByIdAndDelete(admin_id);
-      return res.json({ message: "Admin Deleted" });
+      return res.json(new ApiResponse(200, admin, "Admin Deleted"));
     }
     res.json({ message: "Admin not present" });
   } catch (e) {
-    res.json({ error: e });
+    res.json(
+      new ApiError(404, "Code error in delete route", [
+        {
+          message: err.message,
+          stack: err.stack,
+        },
+      ])
+    );
   }
 });
 
 // User routes --------------------------------------------------------------------------------------------
 
-app.get("/", auth, userAuth, async (req, res) => {
+app.get("/user", auth, adminAuth, async (req, res) => {
   const user = await User.find();
   res.json({ user });
 });
@@ -111,12 +143,19 @@ app.post("/user/signup", async (req, res) => {
     const { email, username, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-      await new User({ email, username, password }).save();
-      return res.json({ messgae: "User Registered." });
+      const data = await new User({ email, username, password }).save();
+      return res.json(new ApiResponse(200, data, "User Sign-Up Successful!"));
     }
-    res.status(400).json({ message: "User already exist!" });
+    res.status(400).json(new ApiError(400, "User Already Exist!"));
   } catch (err) {
-    res.json({ err, errMessage: "Error!" });
+    res.json(
+      new ApiError(404, "Code error in signup route", [
+        {
+          message: err.message,
+          stack: err.stack,
+        },
+      ])
+    );
   }
 });
 
@@ -133,9 +172,16 @@ app.post("/user/signin", async (req, res) => {
     const token = jwt.sign({ usernameOrEmail, role: "user" }, secretKey, {
       expiresIn: "1h",
     });
-    res.json({ message: "Signin Successful", token });
+    res.json(new ApiResponse(200, token, "Admin Sign-Up Successful!"));
   } catch (err) {
-    res.json({ err, errMessage: "Error!" });
+    res.json(
+      new ApiError(404, "Code error in signin route", [
+        {
+          message: err.message,
+          stack: err.stack,
+        },
+      ])
+    );
   }
 });
 
@@ -150,7 +196,9 @@ app.put("/user/update/:userId", auth, userAuth, async (req, res) => {
           { password: newPassword },
           { new: true }
         );
-        return res.json({ message: "Password updated succesfull" });
+        return res.json(
+          new ApiResponse(200, admin, "Password updated succesfull")
+        );
       }
       return res.json({
         message: "newPassword and confirmPassword is not matching",
@@ -158,7 +206,14 @@ app.put("/user/update/:userId", auth, userAuth, async (req, res) => {
     }
     res.json({ message: "Password in wrong" });
   } catch (e) {
-    res.json({ error: e });
+    res.json(
+      new ApiError(404, "Code error in update route", [
+        {
+          message: err.message,
+          stack: err.stack,
+        },
+      ])
+    );
   }
 });
 
@@ -168,12 +223,26 @@ app.delete("/user/:userId", auth, userAuth, async (req, res) => {
     const user = User.findById(user_id);
     if (user) {
       await User.findByIdAndDelete(user_id);
-      return res.json({ message: "User Deleted" });
+      return res.json(new ApiResponse(200, admin, "Admin Deleted"));
     }
     res.json({ message: "User not present" });
   } catch (e) {
-    res.json({ error: e });
+    res.json(
+      new ApiError(404, "Code error in delete route", [
+        {
+          message: err.message,
+          stack: err.stack,
+        },
+      ])
+    );
   }
+});
+
+//Course Route ------------------------------------------------------------------------------------
+
+app.get("/course", async (req, res) => {
+  const course = await Course.find();
+  res.json(course);
 });
 
 //--------------------------------------------------------------------------------------------------
