@@ -26,7 +26,6 @@ const createCourse = async (req, res) => {
     const admin = await Admin.findOne({
       $or: [{ username: username }, { email: username }],
     });
-    console.log(admin);
     if (admin) {
       const createdBy = admin;
       // Create an instance of the Course model

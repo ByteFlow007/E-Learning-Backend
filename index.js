@@ -1,3 +1,6 @@
+//dotenv configuration
+require("dotenv").config();
+
 //Import Statements
 const app = require("./app.js");
 const connectDB = require("./db/index.js");
@@ -17,9 +20,6 @@ const {
   deleteUser,
 } = require("./routes/user.js");
 const { getCourse, createCourse, deleteCourse } = require("./routes/course.js");
-
-//dotenv configuration
-require("dotenv").config();
 
 //database connection
 connectDB()
