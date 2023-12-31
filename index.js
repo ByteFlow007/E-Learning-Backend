@@ -136,6 +136,24 @@ app.post("/admin/createCourses", auth, adminAuth, async (req, res) => {
     res.json({ error: e.message });
   }
 });
+
+app.delete("/admin/delete/:courseId",auth,adminAuth,async(req,res)=>{
+  try{
+    const courseid=req.params.courseId;
+    const course=Course.findById(courseid);
+    if(course){
+      await Course.findByIdAndDelete(courseid);
+      return  res.json({message:"Course is deleted"});
+    }
+    res.json({message:"Course is not present"})
+   
+  }
+  catch(e){
+    res.json({error:e});
+  }
+ 
+})
+
 app.get('/courses',async(req,res)=>{
   const course=await Course.find({}); 
   res.json({course});
