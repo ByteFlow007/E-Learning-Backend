@@ -44,10 +44,9 @@ app.put("/admin/update/:adminId", auth, adminAuth, updateAdmin);
 
 app.delete("/admin/:adminId", auth, adminAuth, deleteAdmin);
 
-app.post("/admin/createCourses", auth, adminAuth, createCourse);
+app.post("/admin/createCourse", auth, adminAuth, createCourse);
 
 app.delete("/admin/delete/:courseId", auth, adminAuth, deleteCourse);
-
 
 // User routes --------------------------------------------------------------------------------------------
 
@@ -64,4 +63,3 @@ app.delete("/user/:userId", auth, userAuth, deleteUser);
 //Course Route ------------------------------------------------------------------------------------
 
 app.get("/course", getCourse);
-
