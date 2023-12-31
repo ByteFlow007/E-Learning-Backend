@@ -171,13 +171,25 @@ app.post("/admin/createCourses", auth, adminAuth, async (req, res) => {
 
 app.delete("/admin/delete/:courseId",auth,adminAuth,async(req,res)=>{
   try{
+    const username=req.user.usernameOrEmail;
+    const admin=await Admin.findOne({$or:[{username:username},{email:username}]});
     const courseid=req.params.courseId;
-    const course=Course.findById(courseid);
-    if(course){
-      await Course.findByIdAndDelete(courseid);
-      return  res.json({message:"Course is deleted"});
+    const find_course=admin.courseCreated.includes(courseid);
+    if(find_course){
+      const index=admin.courseCreated.indexOf(courseid);
+      const course=Course.findById(courseid);
+      if(course){
+        await Course.findByIdAndDelete(courseid);
+       admin.courseCreated.splice(index,1);
+       await admin.save();  
+       return  res.json({message:"Course is deleted"});
+      }
+     return res.json({message:"Course is not present"})
     }
-    res.json({message:"Course is not present"})
+    else{
+      res.json({message:"Admin is not permitted"});
+    }
+   
    
   }
   catch(e){
