@@ -20,34 +20,40 @@ const getCourse = async (req, res) => {
 };
 
 const createCourse = async (req, res) => {
-  console.log(req.user);
   try {
     const { title, description, image, price, isPublished } = req.body;
     const username = req.user.usernameOrEmail;
     const admin = await Admin.findOne({
       $or: [{ username: username }, { email: username }],
     });
+    console.log(admin);
     if (admin) {
-      const createdBy = admin._id;
+      const createdBy = admin;
       // Create an instance of the Course model
-      const course = new Course({
+      const course = await new Course({
         title,
         description,
         image,
         price,
         isPublished,
         createdBy,
-      });
-      // Save the course instance to the database
-      await course.save();
+      }).save();
       admin.courseCreated.push(course);
       await admin.save();
-      console.log(course);
-      return res.json({ message: "Course is created successfully" });
+      return res.json(
+        new ApiResponse(200, course, "Course Created Successfully.")
+      );
     }
-    res.json({ message: "Admin not found" });
-  } catch (e) {
-    res.json({ error: e.message });
+    res.json(new ApiError(400, "Admin not found"));
+  } catch (err) {
+    res.json(
+      new ApiError(404, "Code error in course creation route", [
+        {
+          message: err.message,
+          stack: err.stack,
+        },
+      ])
+    );
   }
 };
 
@@ -57,11 +63,20 @@ const deleteCourse = async (req, res) => {
     const course = Course.findById(courseid);
     if (course) {
       await Course.findByIdAndDelete(courseid);
-      return res.json({ message: "Course is deleted" });
+      return res.json(
+        new ApiResponse(200, course, "Course Deleted Successfully.")
+      );
     }
-    res.json({ message: "Course is not present" });
-  } catch (e) {
-    res.json({ error: e });
+    res.json(new ApiError(400, "Course not found"));
+  } catch (err) {
+    res.json(
+      new ApiError(404, "Code error in course delete route", [
+        {
+          message: err.message,
+          stack: err.stack,
+        },
+      ])
+    );
   }
 };
 
