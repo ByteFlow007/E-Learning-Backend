@@ -11,6 +11,7 @@ const {
   signinAdmin,
   updateAdmin,
   deleteAdmin,
+  allStudents,
 } = require("./routes/admin.js");
 const {
   getUser,
@@ -54,6 +55,8 @@ app.delete("/admin/:adminId", auth, adminAuth, deleteAdmin);
 app.post("/admin/createCourse", auth, adminAuth, createCourse);
 
 app.delete("/admin/delete/:courseId", auth, adminAuth, deleteCourse);
+
+app.get("/admin/student/:adminId", allStudents);
 
 // User routes --------------------------------------------------------------------------------------------
 

@@ -129,9 +129,18 @@ const purchaseCourse = async (req, res) => {
     }
     user.coursePurchased.push(course);
     await user.save();
-    const admin = await Admin.findOne({ _id: course.createdBy._id });
-    admin.students.push(user);
-    await admin.save();
+    const admin = await Admin.findOne({ _id: course.createdBy._id }).populate(
+      "students"
+    );
+    function isStudentPresent(students, user) {
+      return students.some((object) => {
+        return object.email === user.email;
+      });
+    }
+    if (!isStudentPresent(admin.students, user)) {
+      admin.students.push(user);
+      await admin.save();
+    }
     return res.json(
       new ApiResponse(200, course, "Course Purchased Successful.")
     );
