@@ -8,9 +8,9 @@ const secretKey = process.env.SECRET_KEY;
 const getAdmin = async (req, res) => {
   try {
     const admin = await Admin.find();
-    res.json(new ApiResponse(200, admin, "All Admin."));
+    return res.json(new ApiResponse(200, admin, "All Admin."));
   } catch (err) {
-    res.json(
+    return res.json(
       new ApiError(404, "Code error in signup route.", [
         {
           message: err.message,
@@ -29,9 +29,9 @@ const signupAdmin = async (req, res) => {
       const data = await new Admin({ email, username, password }).save();
       return res.json(new ApiResponse(200, data, "Admin Signup Successful."));
     }
-    res.json(new ApiError(400, "Admin Already Exist."));
+    return res.json(new ApiError(400, "Admin Already Exist."));
   } catch (err) {
-    res.json(
+    return res.json(
       new ApiError(404, "Code error in signup route.", [
         {
           message: err.message,
@@ -55,9 +55,9 @@ const signinAdmin = async (req, res) => {
     const token = jwt.sign({ usernameOrEmail, role: "admin" }, secretKey, {
       expiresIn: "1h",
     });
-    res.json(new ApiResponse(200, token, "Admin Signin Successful."));
+    return res.json(new ApiResponse(200, token, "Admin Signin Successful."));
   } catch (err) {
-    res.json(
+    return res.json(
       new ApiError(404, "Code error in signin route.", [
         {
           message: err.message,
@@ -87,9 +87,9 @@ const updateAdmin = async (req, res) => {
         new ApiError(400, "newPassword and confirmPassword is not matching.")
       );
     }
-    res.json(new ApiError(400, "Wrong Password."));
+    return res.json(new ApiError(400, "Wrong Password."));
   } catch (err) {
-    res.json(
+    return res.json(
       new ApiError(404, "Code error in update route", [
         {
           message: err.message,
@@ -108,9 +108,9 @@ const deleteAdmin = async (req, res) => {
       await Admin.findByIdAndDelete(admin_id);
       return res.json(new ApiResponse(200, admin, "Admin Deleted"));
     }
-    res.json(new ApiError(400, "Admin not present."));
+    return res.json(new ApiError(400, "Admin not present."));
   } catch (err) {
-    res.json(
+    return res.json(
       new ApiError(404, "Code error in delete route.", [
         {
           message: err.message,

@@ -8,9 +8,9 @@ const secretKey = process.env.SECRET_KEY;
 const getUser = async (req, res) => {
   try {
     const user = await User.find();
-    res.json(new ApiResponse(200, user, "All Users."));
+    return res.json(new ApiResponse(200, user, "All Users."));
   } catch (err) {
-    res.json(
+    return res.json(
       new ApiError(404, "Code error in signup route.", [
         {
           message: err.message,
@@ -29,9 +29,9 @@ const signupUser = async (req, res) => {
       const data = await new User({ email, username, password }).save();
       return res.json(new ApiResponse(200, data, "User Sign-Up Successful."));
     }
-    res.json(new ApiError(400, "User Already Exist."));
+    return res.json(new ApiError(400, "User Already Exist."));
   } catch (err) {
-    res.json(
+    return res.json(
       new ApiError(404, "Code error in signup route.", [
         {
           message: err.message,
@@ -55,9 +55,9 @@ const signinUser = async (req, res) => {
     const token = jwt.sign({ usernameOrEmail, role: "user" }, secretKey, {
       expiresIn: "1h",
     });
-    res.json(new ApiResponse(200, token, "User Sign-Up Successful!"));
+    return res.json(new ApiResponse(200, token, "User Sign-Up Successful!"));
   } catch (err) {
-    res.json(
+    return res.json(
       new ApiError(404, "Code error in signin route", [
         {
           message: err.message,
@@ -87,9 +87,9 @@ const updateUser = async (req, res) => {
         message: "newPassword and confirmPassword is not matching",
       });
     }
-    res.json({ message: "Password in wrong" });
+    return res.json({ message: "Password in wrong" });
   } catch (err) {
-    res.json(
+    return res.json(
       new ApiError(404, "Code error in update route", [
         {
           message: err.message,
@@ -108,9 +108,9 @@ const deleteUser = async (req, res) => {
       await User.findByIdAndDelete(user_id);
       return res.json(new ApiResponse(200, user, "User Deleted"));
     }
-    res.json({ message: "User not present" });
+    return res.json({ message: "User not present" });
   } catch (err) {
-    res.json(
+    return res.json(
       new ApiError(404, "Code error in delete route", [
         {
           message: err.message,

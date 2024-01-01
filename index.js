@@ -24,6 +24,7 @@ const {
   createCourse,
   deleteCourse,
   publishedCourse,
+  purchaseCourse,
 } = require("./routes/course.js");
 
 //database connection
@@ -45,13 +46,13 @@ app.post("/admin/signup", signupAdmin);
 
 app.post("/admin/signin", signinAdmin);
 
-app.put("/admin/update/:adminId", adminAuth, auth, updateAdmin);
+app.put("/admin/update/:adminId", auth, adminAuth, updateAdmin);
 
-app.delete("/admin/:adminId", adminAuth, auth, deleteAdmin);
+app.delete("/admin/:adminId", auth, adminAuth, deleteAdmin);
 
-app.post("/admin/createCourse", adminAuth, auth, createCourse);
+app.post("/admin/createCourse", auth, adminAuth, createCourse);
 
-app.delete("/admin/delete/:courseId", adminAuth, auth, deleteCourse);
+app.delete("/admin/delete/:courseId", auth, adminAuth, deleteCourse);
 
 // User routes --------------------------------------------------------------------------------------------
 
@@ -61,11 +62,13 @@ app.post("/user/signup", signupUser);
 
 app.post("/user/signin", signinUser);
 
-app.put("/user/update/:userId", userAuth, auth, updateUser);
+app.put("/user/update/:userId", auth, userAuth, updateUser);
 
-app.delete("/user/:userId", userAuth, auth, deleteUser);
+app.delete("/user/:userId", auth, userAuth, deleteUser);
 
-app.get("/user/publishedcourse", userAuth, auth, publishedCourse);
+app.get("/user/publishedcourse", auth, userAuth, publishedCourse);
+
+app.post("/user/purchasecourse/:courseId", auth, purchaseCourse);
 
 //Course Route ------------------------------------------------------------------------------------
 
