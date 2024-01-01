@@ -2,9 +2,10 @@ const User = require("../modal/User/user.modal.js");
 const ApiResponse = require("../utils/ApiResponse.js");
 const ApiError = require("../utils/ApiError.js");
 const jwt = require("jsonwebtoken");
-const bcrypt=require('bcrypt');
+const bcrypt = require("bcrypt");
 const secretKey = process.env.SECRET_KEY;
-const saltRounds=process.env.SALTROUNDS;
+const saltRounds = 10;
+
 const getUser = async (req, res) => {
   try {
     const user = await User.find();
@@ -26,8 +27,12 @@ const signupUser = async (req, res) => {
     const { email, username, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-      const hashPassword=await bcrypt.hash(password,saltRounds);
-      const data = await new User({ email, username, password:hashPassword }).save();
+      const hashPassword = await bcrypt.hash(password, saltRounds);
+      const data = await new User({
+        email,
+        username,
+        password: hashPassword,
+      }).save();
       return res.json(new ApiResponse(200, data, "User Sign-Up Successful."));
     }
     return res.json(new ApiError(400, "User Already Exist."));
@@ -48,9 +53,8 @@ const signinUser = async (req, res) => {
     const { usernameOrEmail, password } = req.body; // Updated variable name
     const user = await User.findOne({
       $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
-     
     });
-    const match=await bcrypt.compare(password,user.password);
+    const match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res.json(new ApiError(400, "Invalid Credentials."));
     }

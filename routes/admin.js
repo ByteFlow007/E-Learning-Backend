@@ -4,7 +4,7 @@ const ApiError = require("../utils/ApiError.js");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const secretKey = process.env.SECRET_KEY;
-const saltRounds = process.env.SALTROUNDS;
+const saltRounds = 10;
 
 const getAdmin = async (req, res) => {
   try {
@@ -127,10 +127,31 @@ const deleteAdmin = async (req, res) => {
   }
 };
 
+const allStudents = async (req, res) => {
+  try {
+    const admin = await Admin.findById(req.params.adminId).populate("students");
+    if (!admin) {
+      return res.json(new ApiError(404, "Admin not found."));
+    }
+    const students = admin.students;
+    return res.json(new ApiResponse(200, students, "Mine Students."));
+  } catch (err) {
+    return res.json(
+      new ApiError(404, "Code error in delete route.", [
+        {
+          message: err.message,
+          stack: err.stack,
+        },
+      ])
+    );
+  }
+};
+
 module.exports = {
   getAdmin,
   signupAdmin,
   signinAdmin,
   updateAdmin,
   deleteAdmin,
+  allStudents,
 };
