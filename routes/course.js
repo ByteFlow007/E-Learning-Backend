@@ -147,10 +147,33 @@ const purchaseCourse = async (req, res) => {
   }
 };
 
+const myCourses = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId).populate(
+      "coursePurchased"
+    );
+    if (!user) {
+      return res.json(new ApiError(404, "User Not Found."));
+    }
+    const courses = user.coursePurchased;
+    return res.send(new ApiResponse(200, courses, "My Purchased Courses."));
+  } catch (err) {
+    return res.send(
+      new ApiError(404, "Code error in course creation route", [
+        {
+          message: err.message,
+          stack: err.stack,
+        },
+      ])
+    );
+  }
+};
+
 module.exports = {
   getCourse,
   createCourse,
   deleteCourse,
   publishedCourse,
   purchaseCourse,
+  myCourses,
 };
