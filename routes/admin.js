@@ -12,7 +12,7 @@ const getAdmin = async (req, res) => {
     return res.json(new ApiResponse(200, admin, "All Admin."));
   } catch (err) {
     return res.json(
-      new ApiError(404, "Code error in signup route.", [
+      new ApiError(404, "Code error in getAdmin route.", [
         {
           message: err.message,
           stack: err.stack,
@@ -38,7 +38,7 @@ const signupAdmin = async (req, res) => {
     return res.json(new ApiError(400, "Admin Already Exist."));
   } catch (err) {
     return res.json(
-      new ApiError(404, "Code error in signup route.", [
+      new ApiError(404, "Code error in signupAdmin route.", [
         {
           message: err.message,
           stack: err.stack,
@@ -64,7 +64,7 @@ const signinAdmin = async (req, res) => {
     return res.json(new ApiResponse(200, token, "Admin Signin Successful."));
   } catch (err) {
     return res.json(
-      new ApiError(404, "Code error in signin route.", [
+      new ApiError(404, "Code error in signinAdmin route.", [
         {
           message: err.message,
           stack: err.stack,
@@ -86,17 +86,17 @@ const updateAdmin = async (req, res) => {
           { new: true }
         );
         return res.json(
-          new ApiResponse(200, admin, "Password updated succesfully.")
+          new ApiResponse(200, admin, "Password Updated Succesfully.")
         );
       }
       return res.json(
-        new ApiError(400, "newPassword and confirmPassword is not matching.")
+        new ApiError(400, "New Password and Confirm Password Is Not Matching.")
       );
     }
     return res.json(new ApiError(400, "Wrong Password."));
   } catch (err) {
     return res.json(
-      new ApiError(404, "Code error in update route", [
+      new ApiError(404, "Code error in updateAdmin route.", [
         {
           message: err.message,
           stack: err.stack,
@@ -112,12 +112,12 @@ const deleteAdmin = async (req, res) => {
     const admin = await Admin.findById(admin_id);
     if (admin) {
       await Admin.findByIdAndDelete(admin_id);
-      return res.json(new ApiResponse(200, admin, "Admin Deleted"));
+      return res.json(new ApiResponse(200, admin, "Admin Deleted."));
     }
-    return res.json(new ApiError(400, "Admin not present."));
+    return res.json(new ApiError(400, "Admin Not Present."));
   } catch (err) {
     return res.json(
-      new ApiError(404, "Code error in delete route.", [
+      new ApiError(404, "Code error in deleteAdmin route.", [
         {
           message: err.message,
           stack: err.stack,
@@ -131,13 +131,13 @@ const allStudents = async (req, res) => {
   try {
     const admin = await Admin.findById(req.params.adminId).populate("students");
     if (!admin) {
-      return res.json(new ApiError(404, "Admin not found."));
+      return res.json(new ApiError(404, "Admin Not Found."));
     }
     const students = admin.students;
-    return res.json(new ApiResponse(200, students, "Mine Students."));
+    return res.json(new ApiResponse(200, students, "My Students."));
   } catch (err) {
     return res.json(
-      new ApiError(404, "Code error in delete route.", [
+      new ApiError(404, "Code error in allStudents route.", [
         {
           message: err.message,
           stack: err.stack,
