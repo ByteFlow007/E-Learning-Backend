@@ -12,7 +12,7 @@ const getUser = async (req, res) => {
     return res.json(new ApiResponse(200, user, "All Users."));
   } catch (err) {
     return res.json(
-      new ApiError(404, "Code error in signup route.", [
+      new ApiError(404, "Code error in getUser route.", [
         {
           message: err.message,
           stack: err.stack,
@@ -38,7 +38,7 @@ const signupUser = async (req, res) => {
     return res.json(new ApiError(400, "User Already Exist."));
   } catch (err) {
     return res.json(
-      new ApiError(404, "Code error in signup route.", [
+      new ApiError(404, "Code error in signupUser route.", [
         {
           message: err.message,
           stack: err.stack,
@@ -61,10 +61,10 @@ const signinUser = async (req, res) => {
     const token = jwt.sign({ usernameOrEmail, role: "user" }, secretKey, {
       expiresIn: "1h",
     });
-    return res.json(new ApiResponse(200, token, "User Sign-Up Successful!"));
+    return res.json(new ApiResponse(200, token, "User Sign-Up Successful."));
   } catch (err) {
     return res.json(
-      new ApiError(404, "Code error in signin route", [
+      new ApiError(404, "Code error in signinUser route.", [
         {
           message: err.message,
           stack: err.stack,
@@ -86,17 +86,17 @@ const updateUser = async (req, res) => {
           { new: true }
         );
         return res.json(
-          new ApiResponse(200, user, "Password updated succesfull")
+          new ApiResponse(200, user, "Password updated Succesfully.")
         );
       }
       return res.json({
-        message: "newPassword and confirmPassword is not matching",
+        message: "New Password And Confirm Password Is Not Matching.",
       });
     }
-    return res.json({ message: "Password in wrong" });
+    return res.json({ message: "Wrong Password." });
   } catch (err) {
     return res.json(
-      new ApiError(404, "Code error in update route", [
+      new ApiError(404, "Code error in updateUser route", [
         {
           message: err.message,
           stack: err.stack,
@@ -112,12 +112,12 @@ const deleteUser = async (req, res) => {
     const user = User.findById(user_id);
     if (user) {
       await User.findByIdAndDelete(user_id);
-      return res.json(new ApiResponse(200, user, "User Deleted"));
+      return res.json(new ApiResponse(200, user, "User Deleted."));
     }
-    return res.json({ message: "User not present" });
+    return res.json({ message: "User Not Present." });
   } catch (err) {
     return res.json(
-      new ApiError(404, "Code error in delete route", [
+      new ApiError(404, "Code error in deleteUser route.", [
         {
           message: err.message,
           stack: err.stack,

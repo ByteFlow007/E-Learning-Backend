@@ -7,10 +7,10 @@ const User = require("../modal/User/user.modal.js");
 const getCourse = async (req, res) => {
   try {
     const course = await Course.find();
-    return res.json(new ApiResponse(200, course, "All Course"));
+    return res.json(new ApiResponse(200, course, "All Course."));
   } catch (err) {
     return res.json(
-      new ApiError(404, "Code error in signup route", [
+      new ApiError(404, "Code error in getCourse route.", [
         {
           message: err.message,
           stack: err.stack,
@@ -44,10 +44,10 @@ const createCourse = async (req, res) => {
         new ApiResponse(200, course, "Course Created Successfully.")
       );
     }
-    return res.json(new ApiError(400, "Admin not found"));
+    return res.json(new ApiError(400, "Admin Not Found."));
   } catch (err) {
     return res.json(
-      new ApiError(404, "Code error in course creation route", [
+      new ApiError(404, "Code error in createCourse route.", [
         {
           message: err.message,
           stack: err.stack,
@@ -76,13 +76,13 @@ const deleteCourse = async (req, res) => {
           new ApiResponse(200, deletedCourse, "Course Deleted Successfully.")
         );
       }
-      return res.json(new ApiError(400, "Course not found"));
+      return res.json(new ApiError(400, "Course Not Found."));
     } else {
-      return res.json(new ApiError(400, "Admin not found"));
+      return res.json(new ApiError(400, "Admin Not Found."));
     }
   } catch (err) {
     return res.json(
-      new ApiError(404, "Code error in course creation route", [
+      new ApiError(404, "Code error in deleteCourse route.", [
         {
           message: err.message,
           stack: err.stack,
@@ -96,11 +96,11 @@ const publishedCourse = async (req, res) => {
   try {
     const publishedCourse = await Course.find({ isPublished: true });
     return res.json(
-      new ApiResponse(200, publishedCourse, "All published courses.")
+      new ApiResponse(200, publishedCourse, "All Published Courses.")
     );
   } catch (err) {
     return res.json(
-      new ApiError(404, "Code error in course creation route", [
+      new ApiError(404, "Code error in publishedCourse route.", [
         {
           message: err.message,
           stack: err.stack,
@@ -139,7 +139,7 @@ const purchaseCourse = async (req, res) => {
     );
   } catch (err) {
     return res.json(
-      new ApiError(404, "Code error in course creation route", [
+      new ApiError(404, "Code error in purchaseCourse route.", [
         {
           message: err.message,
           stack: err.stack,
@@ -161,7 +161,30 @@ const myCourses = async (req, res) => {
     return res.send(new ApiResponse(200, courses, "My Purchased Courses."));
   } catch (err) {
     return res.send(
-      new ApiError(404, "Code error in course creation route", [
+      new ApiError(404, "Code error in myCourses route.", [
+        {
+          message: err.message,
+          stack: err.stack,
+        },
+      ])
+    );
+  }
+};
+
+const updateCourse = async (req, res) => {
+  try {
+    const update = req.body;
+    const updatedCourse = await Course.findByIdAndUpdate(
+      req.params.courseId,
+      update
+    );
+    if (!updatedCourse) {
+      return res.send(new ApiError(404, "Course Not Found."));
+    }
+    return res.json(new ApiResponse(200, update, "Course Updated."));
+  } catch (error) {
+    res.send(
+      new ApiError(404, "Code error in updateCourse route.", [
         {
           message: err.message,
           stack: err.stack,
@@ -178,4 +201,5 @@ module.exports = {
   publishedCourse,
   purchaseCourse,
   myCourses,
+  updateCourse,
 };
