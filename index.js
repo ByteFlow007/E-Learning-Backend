@@ -25,6 +25,7 @@ const {
   deleteCourse,
   publishedCourse,
   purchaseCourse,
+  myCourses,
 } = require("./routes/course.js");
 
 //database connection
@@ -68,7 +69,9 @@ app.delete("/user/:userId", auth, userAuth, deleteUser);
 
 app.get("/user/publishedcourse", auth, userAuth, publishedCourse);
 
-app.post("/user/purchasecourse/:courseId", auth, purchaseCourse);
+app.post("/user/purchasecourse/:courseId", auth, userAuth, purchaseCourse);
+
+app.get("/user/mycourses/:userId", auth, userAuth, myCourses);
 
 //Course Route ------------------------------------------------------------------------------------
 
