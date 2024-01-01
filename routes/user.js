@@ -4,7 +4,7 @@ const ApiError = require("../utils/ApiError.js");
 const jwt = require("jsonwebtoken");
 const bcrypt=require('bcrypt');
 const secretKey = process.env.SECRET_KEY;
-const saltRounds=10;
+const saltRounds=process.env.SALTROUNDS;
 const getUser = async (req, res) => {
   try {
     const user = await User.find();
@@ -50,7 +50,6 @@ const signinUser = async (req, res) => {
       $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
      
     });
-   
     const match=await bcrypt.compare(password,user.password);
     if (!match) {
       return res.json(new ApiError(400, "Invalid Credentials."));

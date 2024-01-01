@@ -2,10 +2,10 @@ const Admin = require("../modal/Admin/admin.modal.js");
 const ApiResponse = require("../utils/ApiResponse.js");
 const ApiError = require("../utils/ApiError.js");
 const jwt = require("jsonwebtoken");
-const bcrypt=require('bcrypt');
+const bcrypt = require("bcrypt");
 const secretKey = process.env.SECRET_KEY;
+const saltRounds = process.env.SALTROUNDS;
 
-const saltRounds=10;
 const getAdmin = async (req, res) => {
   try {
     const admin = await Admin.find();
@@ -27,8 +27,12 @@ const signupAdmin = async (req, res) => {
     const { email, username, password } = req.body;
     const admin = await Admin.findOne({ email });
     if (!admin) {
-      const hashPassword=await bcrypt.hash(password,saltRounds)
-      const data = await new Admin({ email, username, password:hashPassword }).save();
+      const hashPassword = await bcrypt.hash(password, saltRounds);
+      const data = await new Admin({
+        email,
+        username,
+        password: hashPassword,
+      }).save();
       return res.json(new ApiResponse(200, data, "Admin Signup Successful."));
     }
     return res.json(new ApiError(400, "Admin Already Exist."));
@@ -48,15 +52,12 @@ const signinAdmin = async (req, res) => {
   try {
     const { usernameOrEmail, password } = req.body; // Updated variable name
     const admin = await Admin.findOne({
-      $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }]
+      $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
     });
-    if (!match) {
-      return res.json(new ApiError(400, 'Invalid Credentials.'));
-    }
     const match = await bcrypt.compare(password, admin.password);
-
-  
-    
+    if (!match) {
+      return res.json(new ApiError(400, "Invalid Credentials."));
+    }
     const token = jwt.sign({ usernameOrEmail, role: "admin" }, secretKey, {
       expiresIn: "1h",
     });
