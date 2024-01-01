@@ -129,15 +129,8 @@ const purchaseCourse = async (req, res) => {
     }
     user.coursePurchased.push(course);
     await user.save();
-    const admin = await Admin.findOne({ _id: course.createdBy._id }).populate(
-      "students"
-    );
-    function isStudentPresent(students, user) {
-      return students.some((object) => {
-        return object.email === user.email;
-      });
-    }
-    if (!isStudentPresent(admin.students, user)) {
+    const admin = await Admin.findOne({ _id: course.createdBy._id });
+    if (!admin.students.includes(user._id)) {
       admin.students.push(user);
       await admin.save();
     }
