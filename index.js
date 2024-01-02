@@ -45,6 +45,7 @@ connectDB()
 // Admin Routes--------------------------------------------------------------------------------
 
 app.get("/admin", getAdmin); //remove at the end
+
 app.get("/admin/myCourses",auth ,adminAuth,getMyCourses);
 
  app.get("/admin/allstudents/:adminId", allStudents);
