@@ -1,3 +1,4 @@
+//Custom Response Object for Every Response
 module.exports = class ApiResponse {
   constructor(statusCode, data, message = "Success") {
     this.statusCode = statusCode;

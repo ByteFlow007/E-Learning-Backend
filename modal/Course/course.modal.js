@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+//Course Schema
 const courseSchema = new mongoose.Schema(
   {
     title: {

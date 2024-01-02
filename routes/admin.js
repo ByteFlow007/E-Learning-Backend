@@ -23,6 +23,8 @@ const getAdmin = async (req, res) => {
   }
 };
 
+//Admin Signup Route function
+
 const signupAdmin = async (req, res) => {
   try {
     const typeCheck = signupSchema.safeParse(req.body);
@@ -53,13 +55,14 @@ const signupAdmin = async (req, res) => {
   }
 };
 
+//Admin Signin Route function
 const signinAdmin = async (req, res) => {
   try {
     const typeCheck = signinSchema.safeParse(req.body);
     if (!typeCheck.success) {
       return res.json(new ApiError(400, typeCheck.error.issues[0].message));
     }
-    const { usernameOrEmail, password } = typeCheck.data; // Updated variable name
+    const { usernameOrEmail, password } = typeCheck.data; 
     const admin = await Admin.findOne({
       $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
     });
@@ -82,6 +85,8 @@ const signinAdmin = async (req, res) => {
     );
   }
 };
+
+//Admin Password Update Route function
 
 const updateAdmin = async (req, res) => {
   try {
@@ -115,6 +120,8 @@ const updateAdmin = async (req, res) => {
   }
 };
 
+//Admin Delete Route function
+
 const deleteAdmin = async (req, res) => {
   try {
     const admin_id = req.params.adminId;
@@ -136,6 +143,8 @@ const deleteAdmin = async (req, res) => {
   }
 };
 
+//Admin's All Student route function
+
 const allStudents = async (req, res) => {
   try {
     const admin = await Admin.findById(req.params.adminId).populate("students");
@@ -155,6 +164,8 @@ const allStudents = async (req, res) => {
     );
   }
 };
+
+//Admin's Created Course Route function
 
 const getMyCourses=async(req,res)=>{
   try{

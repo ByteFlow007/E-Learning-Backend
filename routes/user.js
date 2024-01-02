@@ -23,6 +23,8 @@ const getUser = async (req, res) => {
   }
 };
 
+//User Signup Route function
+
 const signupUser = async (req, res) => {
   try {
     const typeCheck = signupSchema.safeParse(req.body);
@@ -53,6 +55,8 @@ const signupUser = async (req, res) => {
   }
 };
 
+//User Signin Route function
+
 const signinUser = async (req, res) => {
   try {
     const typeCheck = signinSchema.safeParse(req.body);
@@ -82,6 +86,8 @@ const signinUser = async (req, res) => {
     );
   }
 };
+
+//User Password Update Route function
 
 const updateUser = async (req, res) => {
   try {
@@ -115,6 +121,8 @@ const updateUser = async (req, res) => {
   }
 };
 
+//User Delete Route function
+
 const deleteUser = async (req, res) => {
   try {
     const user_id = req.params.userId;
@@ -136,4 +144,35 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { getUser, signupUser, signinUser, updateUser, deleteUser };
+//User All Bought Courses
+
+const myCourses = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId).populate(
+      "coursePurchased"
+    );
+    if (!user) {
+      return res.json(new ApiError(404, "User Not Found."));
+    }
+    const courses = user.coursePurchased;
+    return res.send(new ApiResponse(200, courses, "My Purchased Courses."));
+  } catch (err) {
+    return res.send(
+      new ApiError(404, "Code error in myCourses route.", [
+        {
+          message: err.message,
+          stack: err.stack,
+        },
+      ])
+    );
+  }
+};
+
+module.exports = {
+  getUser,
+  signupUser,
+  signinUser,
+  updateUser,
+  deleteUser,
+  myCourses,
+};
