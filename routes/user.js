@@ -1,6 +1,7 @@
 const User = require("../modal/User/user.modal.js");
 const ApiResponse = require("../utils/ApiResponse.js");
 const ApiError = require("../utils/ApiError.js");
+const { signupSchema, signinSchema } = require("../utils/ZodSchema.js");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const secretKey = process.env.SECRET_KEY;
@@ -24,7 +25,11 @@ const getUser = async (req, res) => {
 
 const signupUser = async (req, res) => {
   try {
-    const { email, username, password } = req.body;
+    const typeCheck = signupSchema.safeParse(req.body);
+    if (!typeCheck.success) {
+      return res.json(new ApiError(400, typeCheck.error.issues[0].message));
+    }
+    const { email, username, password } = typeCheck.data;
     const user = await User.findOne({ email });
     if (!user) {
       const hashPassword = await bcrypt.hash(password, saltRounds);
@@ -50,7 +55,11 @@ const signupUser = async (req, res) => {
 
 const signinUser = async (req, res) => {
   try {
-    const { usernameOrEmail, password } = req.body; // Updated variable name
+    const typeCheck = signinSchema.safeParse(req.body);
+    if (!typeCheck.success) {
+      return res.json(new ApiError(400, typeCheck.error.issues[0].message));
+    }
+    const { usernameOrEmail, password } = typeCheck.data; // Updated variable name
     const user = await User.findOne({
       $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
     });

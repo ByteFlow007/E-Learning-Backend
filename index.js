@@ -44,7 +44,7 @@ connectDB()
 // Admin Routes--------------------------------------------------------------------------------
 
 app.get("/admin", getAdmin); //remove at the end
- 
+
 //++++++ admin can see his created courses
 
 app.get("/admin/allstudents/:adminId", allStudents);
