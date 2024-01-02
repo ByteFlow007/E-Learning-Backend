@@ -12,6 +12,7 @@ const {
   updateAdmin,
   deleteAdmin,
   allStudents,
+  getMyCourses
 } = require("./routes/admin.js");
 const {
   getUser,
@@ -44,10 +45,9 @@ connectDB()
 // Admin Routes--------------------------------------------------------------------------------
 
 app.get("/admin", getAdmin); //remove at the end
- 
-//++++++ admin can see his created courses
+app.get("/admin/myCourses",auth ,adminAuth,getMyCourses);
 
-app.get("/admin/allstudents/:adminId", allStudents);
+ app.get("/admin/allstudents/:adminId", allStudents);
 
 app.post("/admin/signup", signupAdmin);
 

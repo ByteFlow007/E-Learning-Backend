@@ -147,6 +147,22 @@ const allStudents = async (req, res) => {
   }
 };
 
+const getMyCourses=async(req,res)=>{
+  try{
+    console.log(req.user);
+    const username=req.user.usernameOrEmail;
+    console.log(username)
+    const admin=await Admin.findOne({$or:[{username:username},{email:username}]});
+    if(admin){
+     return  res.json(admin.courseCreated);
+    }
+    res.json({message:"Admin not present"});
+
+  }
+  catch(e){
+    res.json({error:e});
+  }
+}
 module.exports = {
   getAdmin,
   signupAdmin,
@@ -154,4 +170,5 @@ module.exports = {
   updateAdmin,
   deleteAdmin,
   allStudents,
+  getMyCourses
 };
