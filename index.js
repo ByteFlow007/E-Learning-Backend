@@ -43,9 +43,11 @@ connectDB()
 
 // Admin Routes--------------------------------------------------------------------------------
 
-app.get("/admin", getAdmin);
+app.get("/admin", getAdmin); //remove at the end
+ 
+//++++++ admin can see his created courses
 
-app.get("/admin/student/:adminId", allStudents);
+app.get("/admin/allstudents/:adminId", allStudents);
 
 app.post("/admin/signup", signupAdmin);
 
@@ -53,11 +55,11 @@ app.post("/admin/signin", signinAdmin);
 
 app.put("/admin/update/:adminId", auth, adminAuth, updateAdmin);
 
-app.delete("/admin/:adminId", auth, adminAuth, deleteAdmin);
+app.delete("/admin/delete/:adminId", auth, adminAuth, deleteAdmin);
 
 // User routes --------------------------------------------------------------------------------------------
 
-app.get("/user", getUser);
+app.get("/user", getUser); //remove at the end
 
 app.get("/user/mycourses/:userId", auth, userAuth, myCourses);
 
@@ -67,18 +69,18 @@ app.post("/user/signin", signinUser);
 
 app.put("/user/update/:userId", auth, userAuth, updateUser);
 
-app.delete("/user/:userId", auth, userAuth, deleteUser);
+app.delete("/user/delete/:userId", auth, userAuth, deleteUser);
 
 //Course Route ------------------------------------------------------------------------------------
 
-app.get("/course", getCourse);
+app.get("/course", getCourse); //remove at the end
 
-app.get("/user/publishedcourse", auth, userAuth, publishedCourse);
+app.get("/user/publishedcourse", auth, userAuth, publishedCourse); // home page and user login home page
 
 app.post("/admin/createCourse", auth, adminAuth, createCourse);
 
 app.post("/user/purchasecourse/:courseId", auth, userAuth, purchaseCourse);
 
-app.put("/admin/:courseId", auth, adminAuth, updateCourse);
+app.put("/admin/updatecourse/:courseId", auth, adminAuth, updateCourse);
 
-app.delete("/admin/delete/:courseId", auth, adminAuth, deleteCourse);
+app.delete("/admin/deletecourse/:courseId", auth, adminAuth, deleteCourse);
