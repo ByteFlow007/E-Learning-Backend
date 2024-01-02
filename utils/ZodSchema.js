@@ -1,5 +1,6 @@
 const zod = require("zod");
 
+//Signup Type Check
 const signupSchema = zod.object({
   username: zod.string().trim(),
   email: zod.string().email({ message: "Enter Email Correctly." }).trim(),
@@ -16,6 +17,7 @@ const signupSchema = zod.object({
     .trim(),
 });
 
+//Signin Type Check
 const signinSchema = zod.object({
   usernameOrEmail: zod
     .string()

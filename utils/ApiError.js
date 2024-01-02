@@ -1,3 +1,4 @@
+//Custom Error Object for Every Error
 module.exports = class ApiError extends Error {
   constructor(
     statusCode,

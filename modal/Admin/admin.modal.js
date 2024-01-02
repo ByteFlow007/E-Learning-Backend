@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+//Admin Schema
 const adminSchema = new mongoose.Schema(
   {
     username: {

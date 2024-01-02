@@ -2,22 +2,25 @@ const jwt = require("jsonwebtoken");
 const secret_key = process.env.SECRET_KEY;
 const ApiError = require("../utils/ApiError.js");
 
+//User Authentication
 const userAuth = (req, res, next) => {
   if (req.user && req.user.role === "user") {
-    next(); // User is authenticated
+    next(); 
   } else {
-    return res.json(new ApiError(403, "Invalid User.")); // Forbidden for non-users
+    return res.json(new ApiError(403, "Invalid User.")); 
   }
 };
 
+//Admin Authentication
 const adminAuth = (req, res, next) => {
   if (req.user && req.user.role === "admin") {
-    next(); // Admin is authenticated
+    next(); 
   } else {
-    return res.json(new ApiError(403, "Invalid Admin.")); // Forbidden for non-users
+    return res.json(new ApiError(403, "Invalid Admin.")); 
   }
 };
 
+//Jwt Verification
 const auth = (req, res, next) => {
   const token = req.headers.authorization;
   if (!token) {

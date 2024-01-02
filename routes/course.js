@@ -20,6 +20,8 @@ const getCourse = async (req, res) => {
   }
 };
 
+//Admin's Course Creation function
+
 const createCourse = async (req, res) => {
   try {
     const { title, description, image, price, isPublished } = req.body;
@@ -57,6 +59,8 @@ const createCourse = async (req, res) => {
   }
 };
 
+//Admin's Course Deletion function
+
 const deleteCourse = async (req, res) => {
   try {
     const username = req.user.usernameOrEmail;
@@ -92,6 +96,8 @@ const deleteCourse = async (req, res) => {
   }
 };
 
+// All Courses That Are Published By Admin
+
 const publishedCourse = async (req, res) => {
   try {
     const publishedCourse = await Course.find({ isPublished: true });
@@ -109,6 +115,8 @@ const publishedCourse = async (req, res) => {
     );
   }
 };
+
+// All Courses That User Purchased. 
 
 const purchaseCourse = async (req, res) => {
   try {
@@ -149,28 +157,7 @@ const purchaseCourse = async (req, res) => {
   }
 };
 
-const myCourses = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.userId).populate(
-      "coursePurchased"
-    );
-    if (!user) {
-      return res.json(new ApiError(404, "User Not Found."));
-    }
-    const courses = user.coursePurchased;
-    return res.send(new ApiResponse(200, courses, "My Purchased Courses."));
-  } catch (err) {
-    return res.send(
-      new ApiError(404, "Code error in myCourses route.", [
-        {
-          message: err.message,
-          stack: err.stack,
-        },
-      ])
-    );
-  }
-};
-
+//Admin's Course Updation function
 const updateCourse = async (req, res) => {
   try {
     const update = req.body;
@@ -200,6 +187,5 @@ module.exports = {
   deleteCourse,
   publishedCourse,
   purchaseCourse,
-  myCourses,
   updateCourse,
 };

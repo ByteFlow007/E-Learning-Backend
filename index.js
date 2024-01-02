@@ -12,7 +12,7 @@ const {
   updateAdmin,
   deleteAdmin,
   allStudents,
-  getMyCourses
+  getMyCourses,
 } = require("./routes/admin.js");
 const {
   getUser,
@@ -20,6 +20,7 @@ const {
   signinUser,
   updateUser,
   deleteUser,
+  myCourses,
 } = require("./routes/user.js");
 const {
   getCourse,
@@ -27,7 +28,6 @@ const {
   deleteCourse,
   publishedCourse,
   purchaseCourse,
-  myCourses,
   updateCourse,
 } = require("./routes/course.js");
 
@@ -46,9 +46,9 @@ connectDB()
 
 app.get("/admin", getAdmin); //remove at the end
 
-app.get("/admin/myCourses",auth ,adminAuth,getMyCourses);
+app.get("/admin/myCourses", auth, adminAuth, getMyCourses);
 
- app.get("/admin/allstudents/:adminId", allStudents);
+app.get("/admin/allstudents/:adminId", allStudents);
 
 app.post("/admin/signup", signupAdmin);
 
