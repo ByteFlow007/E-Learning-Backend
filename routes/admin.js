@@ -156,6 +156,23 @@ const allStudents = async (req, res) => {
   }
 };
 
+const getMyCourses=async(req,res)=>{
+  try{
+    console.log(req.user);
+    const username=req.user.usernameOrEmail;
+    console.log(username)
+    const admin=await Admin.findOne({$or:[{username:username},{email:username}]}).populate("courseCreated");
+    if(admin){
+      const courseCreated=admin.courseCreated;
+      return res.json(new ApiResponse(200, courseCreated, "My Courses."));
+    }
+    res.json({message:"Admin not present"});
+
+  }
+  catch(e){
+    res.json({error:e});
+  }
+}
 module.exports = {
   getAdmin,
   signupAdmin,
@@ -163,4 +180,5 @@ module.exports = {
   updateAdmin,
   deleteAdmin,
   allStudents,
+  getMyCourses
 };
