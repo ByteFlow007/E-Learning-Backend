@@ -152,9 +152,10 @@ const getMyCourses=async(req,res)=>{
     console.log(req.user);
     const username=req.user.usernameOrEmail;
     console.log(username)
-    const admin=await Admin.findOne({$or:[{username:username},{email:username}]});
+    const admin=await Admin.findOne({$or:[{username:username},{email:username}]}).populate("courseCreated");
     if(admin){
-     return  res.json(admin.courseCreated);
+      const courseCreated=admin.courseCreated;
+      return res.json(new ApiResponse(200, courseCreated, "My Courses."));
     }
     res.json({message:"Admin not present"});
 
