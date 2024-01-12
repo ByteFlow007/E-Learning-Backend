@@ -18,6 +18,10 @@ const courseSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    videos:[{
+     type:mongoose.Schema.Types.ObjectId,
+     ref:"Video"
+    }],
     isPublished: {
       type: Boolean,
       required: true,

@@ -17,6 +17,9 @@ const adminSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    avatar: {
+      type: String,
+    },
     students: [
       {
         type: mongoose.Schema.Types.ObjectId,
