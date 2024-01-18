@@ -74,7 +74,7 @@ const signinUser = async (req, res) => {
     const token = jwt.sign({ usernameOrEmail, role: "user" }, secretKey, {
       expiresIn: "1h",
     });
-    return res.json(new ApiResponse(200, token, "User Sign-Up Successful."));
+    return res.json(new ApiResponse(200, token, "User Sign-In Successful."));
   } catch (err) {
     return res.json(
       new ApiError(404, "Code error in signinUser route.", [
