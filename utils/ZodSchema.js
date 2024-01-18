@@ -2,7 +2,9 @@ const zod = require("zod");
 
 //Signup Type Check
 const signupSchema = zod.object({
-  username: zod.string().trim(),
+  username: zod.string().trim().refine(username => username.trim() !== '', {
+      message: "Username cannot be empty.",
+    }),
   email: zod.string().email({ message: "Enter Email Correctly." }).trim(),
   password: zod
     .string()
