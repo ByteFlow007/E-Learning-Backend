@@ -65,7 +65,7 @@ const signinUser = async (req, res) => {
     }
     const { usernameOrEmail, password } = typeCheck.data; // Updated variable name
     const user = await User.findOne({
-      $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
+      $or: [{ username: usernameOrEmail }, { email: usernameOrEmail.toLowerCase() }],
     });
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
