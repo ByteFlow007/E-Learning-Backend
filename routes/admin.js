@@ -64,7 +64,7 @@ const signinAdmin = async (req, res) => {
     }
     const { usernameOrEmail, password } = typeCheck.data; 
     const admin = await Admin.findOne({
-      $or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
+      $or: [{ username: usernameOrEmail }, { email: usernameOrEmail.toLowerCase() }],
     });
     const match = await bcrypt.compare(password, admin.password);
     if (!match) {
