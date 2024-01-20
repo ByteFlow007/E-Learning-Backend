@@ -5,7 +5,7 @@ const signupSchema = zod.object({
   username: zod.string().trim().refine(username => username.trim() !== '', {
       message: "Username cannot be empty.",
     }),
-  email: zod.string().email({ message: "Enter Email Correctly." }).trim(),
+  email: zod.string().email({ message: "Enter Email Correctly." }).trim().toLowerCase(),
   password: zod
     .string()
     .min(8, { message: "Minimum Password Length : 8" })
