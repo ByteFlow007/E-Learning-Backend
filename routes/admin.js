@@ -66,6 +66,7 @@ const signinAdmin = async (req, res) => {
     const admin = await Admin.findOne({
       $or: [{ username: usernameOrEmail }, { email: usernameOrEmail.toLowerCase() }],
     });
+    console.log("hello")
     const match = await bcrypt.compare(password, admin.password);
     if (!match) {
       return res.json(new ApiError(400, "Invalid Password."));
