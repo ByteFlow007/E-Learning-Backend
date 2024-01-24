@@ -66,9 +66,12 @@ const signinAdmin = async (req, res) => {
     const admin = await Admin.findOne({
       $or: [{ username: usernameOrEmail }, { email: usernameOrEmail.toLowerCase() }],
     });
+    if(!admin){
+      return res.json(new ApiError(400, "Invalid Username."))
+    }
     const match = await bcrypt.compare(password, admin.password);
     if (!match) {
-      return res.json(new ApiError(400, "Invalid Credentials."));
+      return res.json(new ApiError(400, "Invalid Password."));
     }
     const token = jwt.sign({ usernameOrEmail, role: "admin" }, secretKey, {
       expiresIn: "1h",
