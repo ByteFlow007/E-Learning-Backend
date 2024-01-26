@@ -76,7 +76,7 @@ app.delete("/user/delete/:userId", auth, userAuth, deleteUser);
 
 app.get("/course", getCourse); //remove at the end
 
-app.get("/user/publishedcourse", auth, userAuth, publishedCourse); // home page and user login home page
+app.get("/user/publishedcourse", publishedCourse); // home page and user login home page
 
 app.post("/admin/createCourse", auth, adminAuth, createCourse);
 
