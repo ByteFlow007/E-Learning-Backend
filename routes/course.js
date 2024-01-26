@@ -100,7 +100,9 @@ const deleteCourse = async (req, res) => {
 
 const publishedCourse = async (req, res) => {
   try {
-    const publishedCourse = await Course.find({ isPublished: true });
+    const publishedCourse = await Course.find({ isPublished: true }).populate(
+      "createdBy"
+    );;
     return res.json(
       new ApiResponse(200, publishedCourse, "All Published Courses.")
     );
