@@ -62,7 +62,7 @@ app.delete("/admin/delete/:adminId", auth, adminAuth, deleteAdmin);
 
 app.get("/user", getUser); //remove at the end
 
-app.get("/user/mycourses/:userId", auth, userAuth, myCourses);
+app.get("/user/mycourses", auth, userAuth, myCourses);
 
 app.post("/user/signup", signupUser);
 
