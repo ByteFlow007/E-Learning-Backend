@@ -151,7 +151,9 @@ const deleteUser = async (req, res) => {
 
 const myCourses = async (req, res) => {
   try {
-    const user = await User.findOne({usernameOrEmail:req.user.usernameOrEmail}).populate(
+    const user = await User.findOne({
+      $or: [{ username: usernameOrEmail }, { email: usernameOrEmail.toLowerCase() }],
+    }).populate(
       "coursePurchased"
     );
     if (!user) {
